@@ -39,10 +39,12 @@ class Extract:
 
     @staticmethod
     def multiple_maturities(
+            api_key: str,
             interval: str = 'daily'
-    ) -> pd.DataFrame:
+    ) -> tuple:
         """
 
+        :param api_key:
         :param interval:
         :return:
         """
@@ -55,10 +57,12 @@ class Extract:
             '30year'
         ]
         for option in options:
-            df = Extract.treasury_yields(interval=interval, maturity=option)
+            df = Extract.treasury_yields(interval=interval, maturity=option, api_key=api_key)
             if len(df) > 0:
                 yield option, df
 
 
-for i in Extract.multiple_maturities():
+# TEST
+api_key = os.environ.get('AV_API_KEY')
+for i in Extract.multiple_maturities(api_key):
     print(i[0], len(i[1]))
