@@ -1,9 +1,7 @@
-from database.postgres import PostgresDB
-from trading_price.etl.extract import Extract
-from trading_price.etl.transform import Transform
-from trading_price.etl.load import Load
 import os
 import logging
+from database.postgres import PostgresDB
+from fin_elt.elt.extract import Extract
 
 
 def pipeline() -> bool:
@@ -16,12 +14,13 @@ def pipeline() -> bool:
 
     logger.info("Commencing extraction")
     # extract data
-
+    for i in Extract.multiple_maturities(api_key=api_key):
+        print(i[0], len(i[1]))
     logger.info("Extraction complete")
 
     engine = PostgresDB.create_pg_engine()
 
-    # load database (upsert)
+    # load database (staging overwrite)
     logger.info("Commencing database load")
 
     logger.info("Database load complete")
