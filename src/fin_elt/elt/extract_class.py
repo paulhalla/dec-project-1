@@ -21,7 +21,11 @@ class Extract:
         :return: Pandas Dataframe
         """
 
-        url = f'https://www.alphavantage.co/query?function=TREASURY_YIELD&'f'interval={interval}&'f'maturity={maturity}&'f'apikey={api_key}'
+        url = f'https://www.alphavantage.co/query?' \
+              f'function=TREASURY_YIELD&' \
+              f'interval={interval}&' \
+              f'maturity={maturity}&' \
+              f'apikey={api_key}'
 
         if api_key:
             logging.info(f'Extracting {interval} {maturity} treasury yields from API.')
@@ -60,9 +64,10 @@ class Extract:
             df = Extract.treasury_yields(interval=interval, maturity=option, api_key=api_key)
             if len(df) > 0:
                 yield option, df
-
+            else:
+                logging.error(f'No data returned: {option} treasury yields.')
 
 # TEST
-api_key = os.environ.get('AV_API_KEY')
-for i in Extract.multiple_maturities(api_key):
-    print(i[0], len(i[1]))
+# api_key = os.environ.get('AV_API_KEY')
+# for i in Extract.multiple_maturities(api_key):
+#     print(i[0], len(i[1]))
