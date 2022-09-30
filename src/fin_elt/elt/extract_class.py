@@ -9,16 +9,17 @@ class Extract:
     @staticmethod
     def treasury_yields(
             interval: str,
-            maturity: str
+            maturity: str,
+            api_key: str
     ) -> pd.DataFrame:
         """
         Function to extract historical US Treasury Yields (including current day)
 
         :param interval: granularity of data (daily, weekly, monthly)
         :param maturity: type of bond (3month, 2year, 5year, 7year, 10year, 30year)
+        :param api_key: api key to access Alpha Vantage API
         :return: Pandas Dataframe
         """
-        api_key = os.environ.get('AV_API_KEY')
 
         url = f'https://www.alphavantage.co/query?function=TREASURY_YIELD&'f'interval={interval}&'f'maturity={maturity}&'f'apikey={api_key}'
 
@@ -38,8 +39,13 @@ class Extract:
 
     @staticmethod
     def multiple_maturities(
-            interval='daily'
-    ):
+            interval: str = 'daily'
+    ) -> pd.DataFrame:
+        """
+
+        :param interval:
+        :return:
+        """
         options = [
             '3month',
             '2year',
