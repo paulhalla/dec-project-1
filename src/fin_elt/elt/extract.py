@@ -6,11 +6,6 @@ import logging
 
 class Extract:
 
-    logging.basicConfig(
-        format="[%(levelname)s][%(asctime)s][%(filename)s]: %(message)s")  # format: https://docs.python.org/3/library/logging.html#logging.LogRecord
-    logger = logging.getLogger(__file__)
-    logger.setLevel(logging.INFO)
-
     @staticmethod
     def treasury_yields(
             interval: str,
@@ -25,6 +20,7 @@ class Extract:
         :param api_key: api key to access Alpha Vantage API
         :return: Pandas Dataframe
         """
+        logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
 
         url = f'https://www.alphavantage.co/query?' \
               f'function=TREASURY_YIELD&' \
@@ -33,11 +29,13 @@ class Extract:
               f'apikey={api_key}'
 
         if api_key:
+            logging.info(f'Starting extract of {interval} {maturity} treasury yields from API')
             r = requests.get(url)
             if r.status_code == 200:
                 try:
                     data = r.json()
                     df = pd.json_normalize(data['data'])
+                    logging.info(f'Finish extract of {interval} {maturity} treasury yields from API')
                     return df
                 except KeyError:
                     logging.error(f'Error extracting {interval} {maturity} treasury yields from API')
@@ -55,6 +53,8 @@ class Extract:
         :param interval:
         :return:
         """
+        logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
+
         options = [
             '3month',
             '2year',
@@ -72,4 +72,4 @@ class Extract:
 
 
 # for i in Extract.multiple_maturities(os.environ.get('AV_API_KEY')):
-#     print(i[0], len(i[1]))
+#     print(i[0])
