@@ -51,7 +51,7 @@ def pipeline() -> bool:
         df = treasury_data[maturity]
         logger.info(f"Loading: {maturity} treasury yield data to staging table")
         key_columns = Load.get_key_columns(maturity)
-        table_name = f'treasury_yield_{maturity}'
+        table_name = f'raw_treasury_yield_{maturity}'
         Load.overwrite_to_database(
             df=df,
             table_name=table_name,
