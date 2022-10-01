@@ -6,9 +6,10 @@ import os
 class PostgresDB:
 
     @staticmethod
-    def create_pg_engine(db_target: str = "source"):
+    def create_pg_engine(db_target: str = "target"):
         """
-        create an engine to either `source` or `target`
+        Create an engine to either 'source' or 'target'
+        Default is 'target' which is AWS RDS server
         """
         db_user = os.environ.get(f"{db_target}_db_user")
         db_password = os.environ.get(f"{db_target}_db_password")
