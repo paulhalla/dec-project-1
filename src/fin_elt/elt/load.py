@@ -139,6 +139,3 @@ class Load:
         )
         logging.info(f"Successful write to table: {table_name}, rows inserted/updated: {len(df)}")
         return True
-
-
-print(Load.get_key_columns('treasury_3month'))
