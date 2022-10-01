@@ -18,7 +18,7 @@ def pipeline() -> bool:
     api_key = os.environ.get('AV_API_KEY')
 
     # Load config data
-    with open(f"fin_elt/elt/config.yaml") as stream:
+    with open(f"fin_elt/config.yaml") as stream:
         config = yaml.safe_load(stream)
 
     #
@@ -42,6 +42,7 @@ def pipeline() -> bool:
     # LOAD
     #
     logger.info("Commencing database load")
+    logging.info(f'Using server: {os.environ.get("target_db_server_name")}')
 
     # Get Postgres engine for target database
     target_engine = PostgresDB.create_pg_engine('target')

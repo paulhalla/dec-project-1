@@ -16,7 +16,7 @@ class Load:
         get a list of key columns from the config file.
         - `table`: name of the target staging table
         """
-        with open(f"fin_elt/elt/config.yaml") as stream:
+        with open(f"fin_elt/config.yaml") as stream:
             config = yaml.safe_load(stream)
         try:
             key_columns = config['extract']['treasury_yield'][table]['keys']
@@ -126,25 +126,28 @@ class Load:
         - `key_columns`: columns defined as primary keys
         - `engine`: connection engine to database
         """
-        logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
-        logging.info(f"Writing to table: {table_name}")
-        df.to_sql(
-            name=table_name,
-            con=engine,
-            if_exists='replace',
-            index=True,
-            index_label=key_columns,
-            chunksize=1000,  # Added to speed up write
-            method='multi'  # Added to speed up write
-        )
-        logging.info(f"Successful write to table: {table_name}, rows inserted/updated: {len(df)}")
-        return True
+        if df is not None:
+            logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
+            logging.info(f"Writing to table: {table_name}")
+            df.to_sql(
+                name=table_name,
+                con=engine,
+                if_exists='replace',
+                index=True,
+                index_label=key_columns,
+                chunksize=1000,  # Added to speed up write
+                method='multi'  # Added to speed up write
+            )
+            logging.info(f"Successful write to table: {table_name}, rows inserted/updated: {len(df)}")
+            return True
+        else:
+            logging.warning(f"No data to write: {table_name}")
         
     @staticmethod
     def load_fx(
         df:pd.DataFrame,
+        target_database_engine,
         load_method:str="overwrite",
-        target_database_engine=engine,
         target_table_name:str=None
         )->None:
         """
