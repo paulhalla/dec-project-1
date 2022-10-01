@@ -1,2 +1,5 @@
 # Environments
 .env
+
+# Local batch file to set environment variables
+*config.bat

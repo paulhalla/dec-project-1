@@ -3,6 +3,7 @@ import logging
 import yaml
 from database.postgres import PostgresDB
 from fin_elt.elt.extract import Extract
+from fin_elt.elt.load import Load
 
 
 def pipeline() -> bool:
@@ -26,9 +27,10 @@ def pipeline() -> bool:
     logger.info("Commencing extraction")
 
     # Extract treasury yields - for each maturity
+    treasury_data = {}
     for i in config['extract']['treasury_yield']['options']:
         logger.info(f"Extracting: {i} treasury yield API data")
-        print(i, len(Extract.treasury_yields(interval='daily', maturity=i, api_key=api_key)))
+        treasury_data[i] = Extract.treasury_yields(interval='daily', maturity=i, api_key=api_key)
 
     # Extract FX currency pairs
 
@@ -42,10 +44,21 @@ def pipeline() -> bool:
     logger.info("Commencing database load")
 
     # Get Postgres engine for target database
-    engine = PostgresDB.create_pg_engine()
+    target_engine = PostgresDB.create_pg_engine('target')
 
     # load database (staging overwrite)
-
+    treasury_data_keys = {}
+    for maturity in config['extract']['treasury_yield']['options']:
+        df = treasury_data[maturity]
+        logger.info(f"Loading: {maturity} treasury yield data to staging table")
+        key_columns = Load.get_key_columns(maturity)
+        table_name = f'treasury_yield_{maturity}'
+        Load.overwrite_to_database(
+            df=df,
+            table_name=table_name,
+            engine=target_engine,
+            key_columns=key_columns
+        )
 
     logger.info("Database load complete")
 

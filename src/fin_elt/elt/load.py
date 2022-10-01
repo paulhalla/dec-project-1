@@ -19,7 +19,7 @@ class Load:
         with open(f"fin_elt/elt/config.yaml") as stream:
             config = yaml.safe_load(stream)
         try:
-            key_columns = config[table]['keys']
+            key_columns = config['extract']['treasury_yield'][table]['keys']
             return key_columns
         except:
             return []
@@ -113,16 +113,30 @@ class Load:
         return True
 
     @staticmethod
-    def overwrite_to_database(df: pd.DataFrame, table_name: str, engine) -> bool:
+    def overwrite_to_database(
+            df: pd.DataFrame,
+            table_name: str,
+            key_columns: list,
+            engine
+    ) -> bool:
         """
         Upsert dataframe to a database table
         - `df`: pandas dataframe
-        - `table`: name of the target table
+        - `table_name`: name of the target table
+        - `key_columns`: columns defined as primary keys
         - `engine`: connection engine to database
         """
         logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
         logging.info(f"Writing to table: {table_name}")
-        df.to_sql(name=table_name, con=engine, if_exists="replace", index=False)
+        df.to_sql(
+            name=table_name,
+            con=engine,
+            if_exists='replace',
+            index=True,
+            index_label=key_columns,
+            chunksize=1000,  # Added to speed up write
+            method='multi'  # Added to speed up write
+        )
         logging.info(f"Successful write to table: {table_name}, rows inserted/updated: {len(df)}")
         return True
 

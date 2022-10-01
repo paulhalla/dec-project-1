@@ -34,6 +34,8 @@ class Extract:
                 try:
                     data = r.json()
                     df = pd.json_normalize(data['data'])
+                    # Set index to use in load step
+                    df = df.set_index('date')
                     return df
                 except KeyError:
                     logging.error(f'Error extracting {interval} {maturity} treasury yields from API')

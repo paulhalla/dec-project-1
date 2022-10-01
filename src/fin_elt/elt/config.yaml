@@ -8,7 +8,6 @@ extract:
       - "5year"
       - "7year"
       - "10year"
-#    For each maturity option list primary key for staging table
     3month:
       keys:
         - "date"
