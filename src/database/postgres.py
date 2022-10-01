@@ -9,7 +9,7 @@ class PostgresDB:
     def create_pg_engine(db_target: str = "target"):
         """
         Create an engine to either 'source' or 'target'
-        Default is 'target' which is AWS RDS server
+        Default is 'target' which is AWS RDS server in production
         """
         db_user = os.environ.get(f"{db_target}_db_user")
         db_password = os.environ.get(f"{db_target}_db_password")

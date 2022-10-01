@@ -46,8 +46,7 @@ def pipeline() -> bool:
     # Get Postgres engine for target database
     target_engine = PostgresDB.create_pg_engine('target')
 
-    # load database (staging overwrite)
-    treasury_data_keys = {}
+    # Load treasury yield data (staging overwrite)
     for maturity in config['extract']['treasury_yield']['options']:
         df = treasury_data[maturity]
         logger.info(f"Loading: {maturity} treasury yield data to staging table")
@@ -59,6 +58,10 @@ def pipeline() -> bool:
             engine=target_engine,
             key_columns=key_columns
         )
+
+    # Load FX data
+
+    # Load crypto data
 
     logger.info("Database load complete")
 
