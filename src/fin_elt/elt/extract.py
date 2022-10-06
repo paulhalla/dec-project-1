@@ -1,10 +1,47 @@
+import os
 import pandas as pd
-import jinja2 as j2 
 import requests
-import logging 
-import os 
+import logging
+import jinja2 as j2 
 
-class Extract():
+
+class Extract:
+
+    @staticmethod
+    def treasury_yields(
+            interval: str,
+            maturity: str,
+            api_key: str
+    ) -> pd.DataFrame:
+        """
+        Function to extract historical US Treasury Yields (including current day)
+
+        :param interval: granularity of data (daily, weekly, monthly)
+        :param maturity: type of bond (3month, 2year, 5year, 7year, 10year, 30year)
+        :param api_key: api key to access Alpha Vantage API
+        :return: Pandas Dataframe
+        """
+        logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
+
+        url = f'https://www.alphavantage.co/query?' \
+              f'function=TREASURY_YIELD&' \
+              f'interval={interval}&' \
+              f'maturity={maturity}&' \
+              f'apikey={api_key}'
+
+        if api_key:
+            r = requests.get(url)
+            if r.status_code == 200:
+                try:
+                    data = r.json()
+                    df = pd.json_normalize(data['data'])
+                    # Set index to use in load step
+                    df = df.set_index('date')
+                    return df
+                except KeyError:
+                    logging.error(f'Error extracting {interval} {maturity} treasury yields from API')
+            else:
+                logging.error('Call to API - treasury yields - failed.')
 
     @staticmethod
     def extract_fx_rate(
@@ -28,6 +65,7 @@ class Extract():
             df['to'] = f'{to_symbol}'
             return df
     
+    @staticmethod
     def extract_several_fx_rates():
         df_currencies = pd.read_csv("data/main_currencies.csv")
         df_concat = pd.DataFrame()

@@ -1,0 +1,27 @@
+extract:
+#  Configuration for the extraction of treasury yield data
+  treasury_yield:
+#    List of maturity options
+    options:
+      - "3month"
+      - "2year"
+      - "5year"
+      - "7year"
+      - "10year"
+    3month:
+      keys:
+        - "date"
+    2year:
+      keys:
+        - "date"
+    5year:
+      keys:
+        - "date"
+    7year:
+      keys:
+        - "date"
+    10year:
+      keys:
+        - "date"
+
+
