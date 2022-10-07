@@ -4,6 +4,7 @@ import yaml
 from database.postgres import PostgresDB
 from fin_elt.elt.extract import Extract
 from fin_elt.elt.load import Load
+import time
 
 
 def pipeline() -> bool:
@@ -15,7 +16,7 @@ def pipeline() -> bool:
     # CONFIG
     #
     # Get Alpha Vantage API KEY from environment variable
-    api_key = os.environ.get('AV_API_KEY')
+    api_key = os.environ.get('api_key')
 
     # Load config data
     with open(f"fin_elt/config.yaml") as stream:
@@ -32,12 +33,16 @@ def pipeline() -> bool:
         logger.info(f"Extracting: {maturity} treasury yield API data")
         treasury_data[maturity] = Extract.treasury_yields(interval='daily', maturity=maturity, api_key=api_key)
 
+    logger.info("Waiting 60 seconds to avoid hitting API limit")
+    time.sleep(60)
+
     # Extract FX currency pairs
     exchange_rate = {}
     for currency in config['extract']['exchange_rate']['currency']:
-        logger.info(f"Extracting: {maturity} exchange rate API data")
+        logger.info(f"Extracting: {currency} exchange rate API data")
         exchange_rate[currency] = Extract.fx_rate(to_symbol=currency, api_key=api_key)
 
+    
     # Extract Crypto data
 
     logger.info("Extraction complete")
