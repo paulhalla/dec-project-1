@@ -23,5 +23,13 @@ extract:
     10year:
       keys:
         - "date"
-
-
+  #  Configuration for the extraction of exchange rate data
+  exchange_rate:
+#    List of exchange rate target currencies:
+    currency:
+      - "EUR"
+      - "JPY"
+      - "RUB"
+      - "USD"
+      - "AUD"
+    keys: "date"

@@ -55,11 +55,11 @@ class Extract:
         """
         logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
         
-        url = f'https://www.alphavantage.co/query?'
-              f'function=FX_DAILY&'
-              f'from_symbol=USD&'
-              f'to_symbol={to_symbol}&'
-              f'outputsize=full&'
+        url = f'https://www.alphavantage.co/query?' \
+              f'function=FX_DAILY&' \
+              f'from_symbol=USD&' \
+              f'to_symbol={to_symbol}&' \
+              f'outputsize=full&' \
               f'apikey={api_key}'
             
         if api_key:
@@ -76,7 +76,7 @@ class Extract:
                     logging.error(f'Error extracting exchange rates to {to_symbol} from API')
             else:
                 logging.error('Call to API - exchange rates - failed.')
-                
+
     @staticmethod
     def several_fx_rates():
         df_currencies = pd.read_csv("data/main_currencies.csv")
