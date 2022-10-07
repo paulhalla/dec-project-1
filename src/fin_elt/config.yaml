@@ -23,9 +23,6 @@ extract:
     10year:
       keys:
         - "date"
-    eur:
-      keys:
-        - "date"
   #  Configuration for the extraction of exchange rate data
   exchange_rate:
 #    List of exchange rate target currencies:
