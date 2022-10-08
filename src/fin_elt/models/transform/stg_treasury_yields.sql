@@ -65,10 +65,11 @@ WITH yields AS
     WHERE date >= '2000-01-01' -- limit dataset as some fields are missing data for older dates
 )
 {% if table_exists %}
-insert into {{ target_table }}
-{% endif %}
-SELECT *
-FROM yields
-{% if table_exists %}
-where date > '{{ max_date }}'
+    insert into {{ target_table }}
+    SELECT *
+    FROM yields
+    where date > '{{ max_date }}'
+{% else %}
+    SELECT *
+    FROM yields
 {% endif %}
