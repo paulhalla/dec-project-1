@@ -67,6 +67,10 @@ class Extract:
     
     @staticmethod
     def extract_several_fx_rates():
+        """
+        TODO
+        :return:
+        """
         df_currencies = pd.read_csv("data/main_currencies.csv")
         df_concat = pd.DataFrame()
         for currency_name in df_currencies["currency code"]:

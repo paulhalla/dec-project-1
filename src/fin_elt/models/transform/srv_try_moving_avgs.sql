@@ -6,6 +6,8 @@
 
 {% if not table_exists %}
 CREATE TABLE {{ target_table }} AS
+{% else %}
+INSERT INTO {{ target_table }}
 {% endif %}
 
 SELECT date,
@@ -44,12 +46,7 @@ SELECT date,
              2) AS try_10yr_90d_avg,
        ROUND(AVG(treasury_10yr_yield::numeric) OVER (ORDER BY date ROWS BETWEEN 179 PRECEDING AND CURRENT ROW),
              2) AS try_10yr_180d_avg
-
+FROM stg_treasury_yields
 {% if table_exists %}
-INSERT INTO {{ target_table }}
-SELECT *
-FROM stg_treasury_yields
 WHERE date > '{{ max_date }}'
-{% else %}
-FROM stg_treasury_yields
 {% endif %}
