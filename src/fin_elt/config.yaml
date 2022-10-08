@@ -23,5 +23,9 @@ extract:
     10year:
       keys:
         - "date"
-
-
+load:
+  chunksize: 1000
+transform:
+  model_path: "fin_elt/models/transform"
+meta:
+  log_table: "pipeline_logs"
