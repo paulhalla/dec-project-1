@@ -38,23 +38,23 @@ WITH yields AS
                      -- cast data types
                      CASE
                          WHEN a.value = '.' THEN NULL
-                         ELSE a.value::float
+                         ELSE a.value::numeric
                          END                                                AS treasury_3mth_yield,
                      CASE
                          WHEN b.value = '.' THEN NULL
-                         ELSE b.value::float
+                         ELSE b.value::numeric
                          END                                                AS treasury_2yr_yield,
                      CASE
                          WHEN c.value = '.' THEN NULL
-                         ELSE c.value::float
+                         ELSE c.value::numeric
                          END                                                AS treasury_5yr_yield,
                      CASE
                          WHEN d.value = '.' THEN NULL
-                         ELSE d.value::float
+                         ELSE d.value::numeric
                          END                                                AS treasury_7yr_yield,
                      CASE
                          WHEN e.value = '.' THEN NULL
-                         ELSE e.value::float
+                         ELSE e.value::numeric
                          END                                                AS treasury_10yr_yield
               FROM raw_treasury_yield_3month a
                        FULL JOIN raw_treasury_yield_2year b ON a.date = b.date
