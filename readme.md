@@ -23,3 +23,16 @@ Step 2 - We review, plan on how to merge and transform the datasets to finish th
 Step 3 - Person A and B pair program on stitching the ELT pipeline together, adding logging and creating the Dockerfile for the docker image. Person C creates the required AWS services (e.g. RDS, ECR, S3, ECS).  
 
 Step 4 - 2 people pair program on writing unit tests, documentation, and preparing slides for the presentation. The third person works on deploying the solution to AWS.
+
+# Instructions
+## Assumptions
+* User knows how to set up and configure RDS, S3 and access control on AWS
+## Preconditions
+* creation of a Postgres database on AWS
+* creation of an account on Alpha Vantage and obtain API key
+* S3 bucket with an env file 
+  * Update the env file with details (what are they?)
+* Set up schedule to run container (Steps?)
+## Steps
+1. Complete preconditions
+2. Connect reporting tools to RDS
