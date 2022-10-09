@@ -19,7 +19,9 @@ class Load:
         with open(f"fin_elt/config.yaml") as stream:
             config = yaml.safe_load(stream)
         try:
-            key_columns = config['extract']['treasury_yield'][table]['keys']
+            # key_columns = config['extract']['treasury_yield'][table]['keys']
+            # key_columns = config['extract']['exchange_rate'][table]['keys']
+            key_columns = "date"
             return key_columns
         except:
             return []

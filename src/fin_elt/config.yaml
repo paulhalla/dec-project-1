@@ -47,7 +47,6 @@ extract:
     aud:
       keys:
         - "date"
-=======
 load:
   chunksize: 1000
 transform:

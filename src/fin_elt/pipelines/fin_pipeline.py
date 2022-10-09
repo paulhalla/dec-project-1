@@ -55,6 +55,11 @@ def run_pipeline():
             engine=target_engine,
             models_path=path_transform_model
         )
+        node_staging_treasury_yields = Transform(
+            "stg_exchange_rates",
+            engine=target_engine,
+            models_path=path_transform_model
+        )
         node_serving_treasury_moving_avgs = Transform(
             "srv_try_moving_avgs",
             engine=target_engine,

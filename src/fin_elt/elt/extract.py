@@ -68,9 +68,10 @@ class Extract:
                 try:
                     response_data = r.json()
                     df = pd.DataFrame(response_data['Time Series FX (Daily)']).transpose().reset_index()
-                    df = df.rename(columns={ df.columns[0]: "Date" })
+                    df = df.rename(columns={ df.columns[0]: "date" })
                     # df['from'] = f'{from_symbol}' # Won't use in case we do only USD in the FROM column
                     df['to'] = f'{to_symbol}'
+                    df = df.set_index('date')
                     return df
                 except KeyError:
                     logging.error(f'Error extracting exchange rates to {to_symbol} from API')
