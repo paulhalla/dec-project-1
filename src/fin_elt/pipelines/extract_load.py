@@ -4,6 +4,7 @@ import yaml
 from database.postgres import PostgresDB
 from fin_elt.elt.extract import Extract
 from fin_elt.elt.load import Load
+import time
 
 
 def pipeline() -> bool:
@@ -15,7 +16,7 @@ def pipeline() -> bool:
     # CONFIG
     #
     # Get Alpha Vantage API KEY from environment variable
-    api_key = os.environ.get('AV_API_KEY')
+    api_key = os.environ.get('api_key')
 
     # Load config data
     with open(f"fin_elt/config.yaml") as stream:
@@ -28,12 +29,20 @@ def pipeline() -> bool:
 
     # Extract treasury yields - for each maturity
     treasury_data = {}
-    for i in config['extract']['treasury_yield']['options']:
-        logger.info(f"Extracting: {i} treasury yield API data")
-        treasury_data[i] = Extract.treasury_yields(interval='daily', maturity=i, api_key=api_key)
+    for maturity in config['extract']['treasury_yield']['options']:
+        logger.info(f"Extracting: {maturity} treasury yield API data")
+        treasury_data[maturity] = Extract.treasury_yields(interval='daily', maturity=maturity, api_key=api_key)
+
+    logger.info("Waiting 60 seconds to avoid hitting API limit")
+    time.sleep(60)
 
     # Extract FX currency pairs
+    exchange_rate = {}
+    for currency in config['extract']['exchange_rate']['currency']:
+        logger.info(f"Extracting: {currency} exchange rate API data")
+        exchange_rate[currency] = Extract.fx_rate(to_symbol=currency, api_key=api_key)
 
+    
     # Extract Crypto data
 
     logger.info("Extraction complete")
@@ -61,6 +70,17 @@ def pipeline() -> bool:
         )
 
     # Load FX data
+    for currency in config['extract']['exchange_rate']['currency']:
+        df = exchange_rate[currency]
+        logger.info(f"Loading: {currency} exchange rate data to staging table")
+        key_columns = Load.get_key_columns(currency)
+        table_name = f'raw_exchange_rate_{currency}'.lower()
+        Load.overwrite_to_database(
+            df=df,
+            table_name=table_name,
+            engine=target_engine,
+            key_columns=key_columns
+        )
 
     # Load crypto data
 
