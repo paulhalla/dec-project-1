@@ -19,7 +19,7 @@ class Load:
         with open(f"fin_elt/config.yaml") as stream:
             config = yaml.safe_load(stream)
         try:
-            # key_columns = config['extract']['treasury_yield'][table]['keys']
+            key_columns = config['extract']['treasury_yield'][table]['keys']
             key_columns = config['extract']['exchange_rate'][table]['keys']
             return key_columns
         except:
@@ -76,7 +76,7 @@ class Load:
         return True
 
     @staticmethod
-    def upsert_all(df: pd.DataFrame, engine, table_schema: Table, key_columns: list) -> bool:
+def upsert_all(df: pd.DataFrame, engine, table_schema: Table, key_columns: list) -> bool:
         """
         performs the upsert with all rows at once. this may cause timeout issues if the sql statement is very large.
         """
