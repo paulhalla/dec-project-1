@@ -20,7 +20,7 @@ class Load:
             config = yaml.safe_load(stream)
         try:
             key_columns = config['extract']['treasury_yield'][table]['keys']
-            key_columns = config['extract']['exchange_rate'][table]['keys']
+            # key_columns = config['extract']['exchange_rate'][table]['keys']
             return key_columns
         except:
             return []
@@ -134,8 +134,8 @@ class Load:
                 name=table_name,
                 con=engine,
                 if_exists='replace',
-                index=False,
-                # index_label=key_columns,
+                index=True,
+                index_label=key_columns,
                 chunksize=1000,  # Added to speed up write
                 method='multi'  # Added to speed up write
             )
