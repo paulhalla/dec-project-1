@@ -88,7 +88,7 @@ class Load:
         return True
 
     @staticmethod
-    def upsert_to_database(df: pd.DataFrame, table_name: str, key_columns: str, engine, chunksize: int = 1000) -> bool:
+    def upsert_to_database(df: pd.DataFrame, table_name: str, key_columns: list, engine, chunksize: int = 1000) -> bool:
         """
         Upsert dataframe to a database table
         - `df`: pandas dataframe
@@ -142,14 +142,14 @@ class Load:
             return True
         else:
             logging.warning(f"No data to write: {table_name}")
-        
+
     @staticmethod
     def load_fx(
-        df:pd.DataFrame,
-        target_database_engine,
-        load_method:str="overwrite",
-        target_table_name:str=None
-        )->None:
+            df: pd.DataFrame,
+            target_database_engine,
+            load_method: str = "overwrite",
+            target_table_name: str = None
+    ) -> None:
         """
         Load dataframe to either a file or a database. 
         - df: pandas dataframe to load.  
@@ -157,12 +157,12 @@ class Load:
         - target_database_engine: SQLAlchemy engine for the target database. 
         - target_table_name: name of the SQL table to create and/or upsert data to. 
         """
-        if load_method.lower() == "overwrite": 
+        if load_method.lower() == "overwrite":
             df.to_sql(target_table_name, target_database_engine)
         elif load_method.lower() == "upsert":
             meta = MetaData()
             fx_table = Table(
-                target_table_name, meta, 
+                target_table_name, meta,
                 Column("date", String, primary_key=True),
                 Column("open_value", Integer),
                 Column("high_value", String),
@@ -171,7 +171,7 @@ class Load:
                 # Column("from", String, primary_key=True),  # Won't use in case we do only USD in the FROM column
                 Column("to", String, primary_key=True)
             )
-            meta.create_all(target_database_engine) # creates table if it does not exist 
+            meta.create_all(target_database_engine)  # creates table if it does not exist
             insert_statement = postgresql.insert(fx_table).values(df.to_dict(orient='records'))
             upsert_statement = insert_statement.on_conflict_do_update(
                 index_elements=['date', 'to'],
