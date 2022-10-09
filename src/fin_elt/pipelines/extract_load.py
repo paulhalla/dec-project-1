@@ -28,13 +28,13 @@ def pipeline() -> bool:
     logger.info("Commencing extraction")
 
     # Extract treasury yields - for each maturity
-    # treasury_data = {}
-    # for maturity in config['extract']['treasury_yield']['options']:
-    #     logger.info(f"Extracting: {maturity} treasury yield API data")
-    #     treasury_data[maturity] = Extract.treasury_yields(interval='daily', maturity=maturity, api_key=api_key)
+    treasury_data = {}
+    for maturity in config['extract']['treasury_yield']['options']:
+        logger.info(f"Extracting: {maturity} treasury yield API data")
+        treasury_data[maturity] = Extract.treasury_yields(interval='daily', maturity=maturity, api_key=api_key)
 
-    # logger.info("Waiting 60 seconds to avoid hitting API limit")
-    # time.sleep(60)
+    logger.info("Waiting 60 seconds to avoid hitting API limit")
+    time.sleep(60)
 
     # Extract FX currency pairs
     exchange_rate = {}
@@ -57,17 +57,17 @@ def pipeline() -> bool:
     target_engine = PostgresDB.create_pg_engine('target')
 
     # Load treasury yield data (staging overwrite)
-    # for maturity in config['extract']['treasury_yield']['options']:
-    #     df = treasury_data[maturity]
-    #     logger.info(f"Loading: {maturity} treasury yield data to staging table")
-    #     key_columns = Load.get_key_columns(maturity)
-    #     table_name = f'raw_treasury_yield_{maturity}'
-    #     Load.overwrite_to_database(
-    #         df=df,
-    #         table_name=table_name,
-    #         engine=target_engine,
-    #         key_columns=key_columns
-    #     )
+    for maturity in config['extract']['treasury_yield']['options']:
+        df = treasury_data[maturity]
+        logger.info(f"Loading: {maturity} treasury yield data to staging table")
+        key_columns = Load.get_key_columns(maturity)
+        table_name = f'raw_treasury_yield_{maturity}'
+        Load.overwrite_to_database(
+            df=df,
+            table_name=table_name,
+            engine=target_engine,
+            key_columns=key_columns
+        )
 
     # Load FX data
     for currency in config['extract']['exchange_rate']['currency']:
