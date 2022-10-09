@@ -71,7 +71,7 @@ class Extract:
                     df = df.rename(columns={ df.columns[0]: "date" })
                     # df['from'] = f'{from_symbol}' # Won't use in case we do only USD in the FROM column
                     df['to'] = f'{to_symbol}'
-                    df = df.set_index('date')
+                    df.set_index(['date', 'to'])
                     return df
                 except KeyError:
                     logging.error(f'Error extracting exchange rates to {to_symbol} from API')

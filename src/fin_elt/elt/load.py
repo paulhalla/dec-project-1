@@ -19,9 +19,8 @@ class Load:
         with open(f"fin_elt/config.yaml") as stream:
             config = yaml.safe_load(stream)
         try:
-            # key_columns = config['extract']['treasury_yield'][table]['keys']
+            key_columns = config['extract']['treasury_yield'][table]['keys']
             # key_columns = config['extract']['exchange_rate'][table]['keys']
-            key_columns = "date"
             return key_columns
         except:
             return []
@@ -78,16 +77,16 @@ class Load:
 
     @staticmethod
     def upsert_all(df: pd.DataFrame, engine, table_schema: Table, key_columns: list) -> bool:
-        """
-        performs the upsert with all rows at once. this may cause timeout issues if the sql statement is very large.
-        """
-        insert_statement = postgresql.insert(table_schema).values(df.to_dict(orient='records'))
-        upsert_statement = insert_statement.on_conflict_do_update(
-            index_elements=key_columns,
-            set_={c.key: c for c in insert_statement.excluded if c.key not in key_columns})
-        result = engine.execute(upsert_statement)
-        logging.info(f"Insert/updated rows: {result.rowcount}")
-        return True
+            """
+            performs the upsert with all rows at once. this may cause timeout issues if the sql statement is very large.
+            """
+            insert_statement = postgresql.insert(table_schema).values(df.to_dict(orient='records'))
+            upsert_statement = insert_statement.on_conflict_do_update(
+                index_elements=key_columns,
+                set_={c.key: c for c in insert_statement.excluded if c.key not in key_columns})
+            result = engine.execute(upsert_statement)
+            logging.info(f"Insert/updated rows: {result.rowcount}")
+            return True
 
     @staticmethod
     def upsert_to_database(df: pd.DataFrame, table_name: str, key_columns: list, engine, chunksize: int = 1000) -> bool:
