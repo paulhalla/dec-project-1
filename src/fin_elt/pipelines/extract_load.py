@@ -38,12 +38,12 @@ def pipeline() -> bool:
 
     # Extract FX currency pairs
     exchange_rate = {}
-    for currency in config['extract']['exchange_rate']['currency']:
+    for currency in config['extract']['exchange_rate']['currencies']:
         logger.info(f"Extracting: {currency} exchange rate API data")
         exchange_rate[currency] = Extract.fx_rate(to_symbol=currency, api_key=api_key)
 
-    
     # Extract Crypto data
+    # TODO
 
     logger.info("Extraction complete")
 
@@ -70,7 +70,7 @@ def pipeline() -> bool:
         )
 
     # Load FX data
-    for currency in config['extract']['exchange_rate']['currency']:
+    for currency in config['extract']['exchange_rate']['currencies']:
         df = exchange_rate[currency]
         logger.info(f"Loading: {currency} exchange rate data to staging table")
         key_columns = Load.get_key_columns(currency)
@@ -83,6 +83,7 @@ def pipeline() -> bool:
         )
 
     # Load crypto data
+    # TODO
 
     logger.info("Database load complete")
 
