@@ -83,6 +83,18 @@ def pipeline() -> bool:
         )
 
     # Load crypto data
+    for symbol in config['extract']['crypto_price']['symbols']:
+        df = crypto_price[symbol]
+        logger.info(f"Loading: {symbol} crypto price data to staging table")
+        key_columns = Load.get_key_columns(symbol)
+        table_name = f'raw_crypto_price_{symbol}'.lower()
+        Load.overwrite_to_database(
+            df=df,
+            table_name=table_name,
+            engine=target_engine,
+            key_columns=key_columns
+        )
+
 
     logger.info("Database load complete")
 
