@@ -42,8 +42,11 @@ def pipeline() -> bool:
         logger.info(f"Extracting: {currency} exchange rate API data")
         exchange_rate[currency] = Extract.fx_rate(to_symbol=currency, api_key=api_key)
 
-    
     # Extract Crypto data
+    crypto_price = {}
+    for symbol in config['extract']['crypto_price']['symbols']:
+        logger.info(f"Extracting: {symbol} in USD crypto prices API data")
+        crypto_price[symbol] = Extract.crypto_price(symbol=symbol, market="USD", api_key=api_key)
 
     logger.info("Extraction complete")
 
