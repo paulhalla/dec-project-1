@@ -38,12 +38,18 @@ def pipeline() -> bool:
 
     # Extract FX currency pairs
     exchange_rate = {}
-    for currency in config['extract']['exchange_rate']['currency']:
+    for currency in config['extract']['exchange_rate']['currencies']:
         logger.info(f"Extracting: {currency} exchange rate API data")
         exchange_rate[currency] = Extract.fx_rate(to_symbol=currency, api_key=api_key)
 
-    
+    logger.info("Waiting 60 seconds to avoid hitting API limit")
+    time.sleep(60)
+
     # Extract Crypto data
+    crypto_price = {}
+    for symbol in config['extract']['crypto_price']['symbols']:
+        logger.info(f"Extracting: {symbol} in USD crypto prices API data")
+        crypto_price[symbol] = Extract.crypto_price(symbol=symbol, market="USD", api_key=api_key)
 
     logger.info("Extraction complete")
 
@@ -70,7 +76,7 @@ def pipeline() -> bool:
         )
 
     # Load FX data
-    for currency in config['extract']['exchange_rate']['currency']:
+    for currency in config['extract']['exchange_rate']['currencies']:
         df = exchange_rate[currency]
         logger.info(f"Loading: {currency} exchange rate data to staging table")
         key_columns = Load.get_key_columns(currency)
@@ -83,6 +89,17 @@ def pipeline() -> bool:
         )
 
     # Load crypto data
+    for symbol in config['extract']['crypto_price']['symbols']:
+        df = crypto_price[symbol]
+        logger.info(f"Loading: {symbol} crypto price data to staging table")
+        key_columns = Load.get_key_columns(symbol)
+        table_name = f'raw_crypto_price_{symbol}'.lower()
+        Load.overwrite_to_database(
+            df=df,
+            table_name=table_name,
+            engine=target_engine,
+            key_columns=key_columns
+        )
 
     logger.info("Database load complete")
 

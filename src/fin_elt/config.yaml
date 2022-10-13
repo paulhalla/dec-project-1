@@ -8,45 +8,24 @@ extract:
       - "5year"
       - "7year"
       - "10year"
-    3month:
-      keys:
-        - "date"
-    2year:
-      keys:
-        - "date"
-    5year:
-      keys:
-        - "date"
-    7year:
-      keys:
-        - "date"
-    10year:
-      keys:
-        - "date"
 #  Configuration for the extraction of exchange rate data
   exchange_rate:
 #    List of exchange rate target currencies:
-    currency:
+    currencies:
       - "EUR"
       - "JPY"
       - "RUB"
-      - "USD"
       - "AUD"
-    eur:
-      keys:
-        - "date"
-    jpy:
-      keys:
-        - "date"
-    rub:
-      keys:
-        - "date"
-    usd:
-      keys:
-        - "date"
-    aud:
-      keys:
-        - "date"
+      - "GBP"
+#  Configuration for the extraction of crypto price data
+  crypto_price:
+#    List of crypto symbols:
+    symbols:
+      - "BTC"
+      - "ETH"
+      - "DOGE"
+    #markets:
+    #  - "USD"
 load:
   chunksize: 1000
 transform:

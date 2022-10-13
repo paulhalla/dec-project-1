@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import logging
 import jinja2 as j2 
+import yaml
 
 
 class Extract:
@@ -35,13 +36,13 @@ class Extract:
                 try:
                     data = r.json()
                     df = pd.json_normalize(data['data'])
-                    # Set index to use in load step
-                    df = df.set_index('date')
                     return df
                 except KeyError:
                     logging.error(f'Error extracting {interval} {maturity} treasury yields from API')
             else:
                 logging.error('Call to API - treasury yields - failed.')
+        else:
+            logging.error('Missing API key.')
 
     @staticmethod
     def fx_rate(
@@ -69,9 +70,7 @@ class Extract:
                     response_data = r.json()
                     df = pd.DataFrame(response_data['Time Series FX (Daily)']).transpose().reset_index()
                     df = df.rename(columns={ df.columns[0]: "date" })
-                    # df['from'] = f'{from_symbol}' # Won't use in case we do only USD in the FROM column
                     df['to'] = f'{to_symbol}'
-                    df.set_index(['date', 'to'])
                     return df
                 except KeyError:
                     logging.error(f'Error extracting exchange rates to {to_symbol} from API')
@@ -79,10 +78,57 @@ class Extract:
                 logging.error('Call to API - exchange rates - failed.')
 
     @staticmethod
-    def several_fx_rates():
-        df_currencies = pd.read_csv("data/main_currencies.csv")
+    def several_fx_rates(
+            currencies: list,
+            api_key: str
+    ) -> pd.DataFrame:
         df_concat = pd.DataFrame()
-        for currency_name in df_currencies["currency code"]:
-            df_extracted = extract_fx_rates(from_symbol=from_symbol, to_symbol=currency_name, api_key=api_key)
+        for currency_name in currencies:
+            df_extracted = Extract.fx_rate(to_symbol=currency_name, api_key=api_key)
             df_concat = pd.concat([df_concat, df_extracted])
         return df_concat.reset_index().drop(labels=["index"], axis=1)
+
+    @staticmethod
+    def crypto_price(
+            symbol:str,
+            market:str,
+            api_key:str
+    )->pd.DataFrame:
+
+        """
+        Function to extract historical daily crypto prices in USD
+
+        :param symbol: type of crypto
+        :param market: choice of currency based on market PLACEHOLDER USD FOR NOW
+        :param api_key: api key to access Alpha Vantage API
+        :return: Pandas Dataframe
+        """
+
+        logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
+
+        url = f'https://www.alphavantage.co/query?' \
+              f'function=DIGITAL_CURRENCY_DAILY&' \
+              f'symbol={symbol}&' \
+              f'market={market}&' \
+              f'apikey={api_key}'
+
+        #base_url = f'https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={symbol}&market={market}&apikey={api_key}'
+
+        if api_key:
+            r = requests.get(url)
+            if r.status_code == 200:
+                try:
+                    data = r.json()
+                    df = pd.DataFrame(data['Time Series (Digital Currency Daily)']).transpose().reset_index()
+                    df = df.rename(columns={ df.columns[0]: "Date", df.columns[-1]: "Mkt Cap" })
+                    df['Symbol'] = f'{symbol}'
+                    df['Market'] = f'{market}'
+                    df['Mkt Cap'] = round(pd.to_numeric(df['Mkt Cap']),0)
+                    df = df[['Date', 'Symbol', 'Mkt Cap']]
+                    return df
+                except KeyError:
+                    logging.error(f'Error extracting {symbol} {market} from API')
+            else:
+                logging.error('Call to API - crypto prices - failed.')
+        else:
+            logging.error('Missing API key.')
