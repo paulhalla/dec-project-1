@@ -18,7 +18,8 @@ def run_pipeline():
     # set up metadata logger
     metadata_logger = MetadataLogging(db_target="target")
 
-    with open("fin_elt/config.yaml") as stream:
+    # Load config data
+    with open(f"fin_elt/config.yaml") as stream:
         config = yaml.safe_load(stream)
 
     metadata_log_table = config["meta"]["log_table"]
@@ -32,7 +33,6 @@ def run_pipeline():
     )
 
     try:
-
         # configure pipeline
         logging.info("Getting config variables")
         path_transform_model = config["transform"]["model_path"]
@@ -55,17 +55,20 @@ def run_pipeline():
             engine=target_engine,
             models_path=path_transform_model
         )
-        node_staging_treasury_yields = Transform(
+
+        node_staging_exchange_rates = Transform(
             "stg_exchange_rates",
             engine=target_engine,
             models_path=path_transform_model
         )
+
         node_serving_treasury_moving_avgs = Transform(
             "srv_try_moving_avgs",
             engine=target_engine,
             models_path=path_transform_model
         )
         dag.add(node_staging_treasury_yields)
+        dag.add(node_staging_exchange_rates)
         dag.add(node_serving_treasury_moving_avgs, node_staging_treasury_yields)
 
         logging.info("Executing DAG")
