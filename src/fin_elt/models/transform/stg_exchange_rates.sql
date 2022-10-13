@@ -15,15 +15,15 @@ select coalesce(a.date, b.date, c.date, d.date) as date,
         a."4. close" as aud_close_rate,
         b."1. open" as eur_open_rate,
         b."2. high" as eur_high_rate,
-        b."3. low" as eur__low_rate,
+        b."3. low" as eur_low_rate,
         b."4. close" as eur_close_rate,
         c."1. open" as jpy_open_rate,
         c."2. high" as jpy_high_rate,
-        c."3. low" as jpy__low_rate,
+        c."3. low" as jpy_low_rate,
         c."4. close" as jpy_close_rate,
         d."1. open" as rub_open_rate,
         d."2. high" as rub_high_rate,
-        d."3. low" as rub__low_rate,
+        d."3. low" as rub_low_rate,
         d."4. close" as rub_close_rate
 FROM raw_exchange_rate_aud a
 FULL JOIN raw_exchange_rate_eur b ON a.date = b.date

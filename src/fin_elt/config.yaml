@@ -16,6 +16,7 @@ extract:
       - "JPY"
       - "RUB"
       - "AUD"
+      - "GBP"
 load:
   chunksize: 1000
 transform:
