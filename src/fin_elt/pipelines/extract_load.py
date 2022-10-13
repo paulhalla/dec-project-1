@@ -43,7 +43,10 @@ def pipeline() -> bool:
         exchange_rate[currency] = Extract.fx_rate(to_symbol=currency, api_key=api_key)
 
     # Extract Crypto data
-    # TODO
+    crypto_price = {}
+    for symbol in config['extract']['crypto_price']['symbols']:
+        logger.info(f"Extracting: {symbol} in USD crypto prices API data")
+        crypto_price[symbol] = Extract.crypto_price(symbol=symbol, market="USD", api_key=api_key)
 
     logger.info("Extraction complete")
 
@@ -83,7 +86,17 @@ def pipeline() -> bool:
         )
 
     # Load crypto data
-    # TODO
+    for symbol in config['extract']['crypto_price']['symbols']:
+        df = crypto_price[symbol]
+        logger.info(f"Loading: {symbol} crypto price data to staging table")
+        key_columns = Load.get_key_columns(symbol)
+        table_name = f'raw_crypto_price_{symbol}'.lower()
+        Load.overwrite_to_database(
+            df=df,
+            table_name=table_name,
+            engine=target_engine,
+            key_columns=key_columns
+        )
 
     logger.info("Database load complete")
 

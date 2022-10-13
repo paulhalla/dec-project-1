@@ -17,6 +17,15 @@ extract:
       - "RUB"
       - "AUD"
       - "GBP"
+#  Configuration for the extraction of crypto price data
+  crypto_price:
+#    List of crypto symbols:
+    symbols:
+      - "BTC"
+      - "ETH"
+      - "DOGE"
+    #markets:
+    #  - "USD"
 load:
   chunksize: 1000
 transform:
