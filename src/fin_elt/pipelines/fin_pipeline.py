@@ -16,7 +16,7 @@ def run_pipeline():
     logging.basicConfig(stream=run_log, level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
 
     # set up metadata logger
-    metadata_logger = MetadataLogging(db_target="source")
+    metadata_logger = MetadataLogging(db_target="target")
 
     # Load config data
     with open(f"fin_elt/config.yaml") as stream:
@@ -38,7 +38,7 @@ def run_pipeline():
         path_transform_model = config["transform"]["model_path"]
         chunksize = config["load"]["chunksize"]
         # set up database
-        target_engine = PostgresDB.create_pg_engine(db_target="source")
+        target_engine = PostgresDB.create_pg_engine(db_target="target")
 
         # build dag
         dag = TopologicalSorter()
