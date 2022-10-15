@@ -120,11 +120,11 @@ class Extract:
                 try:
                     data = r.json()
                     df = pd.DataFrame(data['Time Series (Digital Currency Daily)']).transpose().reset_index()
-                    df = df.rename(columns={ df.columns[0]: "Date", df.columns[-1]: "Mkt Cap" })
-                    df['Symbol'] = f'{symbol}'
+                    df = df.rename(columns={ df.columns[0]: "date", df.columns[-1]: "mkt_cap" })
+                    df['symbol'] = f'{symbol}'
                     df['Market'] = f'{market}'
-                    df['Mkt Cap'] = round(pd.to_numeric(df['Mkt Cap']),0)
-                    df = df[['Date', 'Symbol', 'Mkt Cap']]
+                    df['mkt_cap'] = round(pd.to_numeric(df['mkt_cap']),0)
+                    df = df[['date', 'symbol', 'mkt_cap']]
                     return df
                 except KeyError:
                     logging.error(f'Error extracting {symbol} {market} from API')

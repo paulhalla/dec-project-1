@@ -16,7 +16,7 @@ def run_pipeline():
     logging.basicConfig(stream=run_log, level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
 
     # set up metadata logger
-    metadata_logger = MetadataLogging(db_target="target")
+    metadata_logger = MetadataLogging(db_target="source")
 
     # Load config data
     with open(f"fin_elt/config.yaml") as stream:
@@ -38,7 +38,7 @@ def run_pipeline():
         path_transform_model = config["transform"]["model_path"]
         chunksize = config["load"]["chunksize"]
         # set up database
-        target_engine = PostgresDB.create_pg_engine(db_target="target")
+        target_engine = PostgresDB.create_pg_engine(db_target="source")
 
         # build dag
         dag = TopologicalSorter()
@@ -62,6 +62,12 @@ def run_pipeline():
             models_path=path_transform_model
         )
 
+        node_staging_crypto = Transform(
+            "stg_crypto",
+            engine=target_engine,
+            models_path=path_transform_model
+        )
+
         node_serving_treasury_moving_avgs = Transform(
             "srv_try_moving_avgs",
             engine=target_engine,
@@ -69,6 +75,7 @@ def run_pipeline():
         )
         dag.add(node_staging_treasury_yields)
         dag.add(node_staging_exchange_rates)
+        dag.add(node_staging_crypto)
         dag.add(node_serving_treasury_moving_avgs, node_staging_treasury_yields)
 
         logging.info("Executing DAG")

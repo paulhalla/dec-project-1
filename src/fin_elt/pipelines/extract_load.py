@@ -60,7 +60,7 @@ def pipeline() -> bool:
     logging.info(f'Using server: {os.environ.get("target_db_server_name")}')
 
     # Get Postgres engine for target database
-    target_engine = PostgresDB.create_pg_engine('target')
+    target_engine = PostgresDB.create_pg_engine('source')
 
     # Load treasury yield data (staging overwrite)
     for maturity in config['extract']['treasury_yield']['options']:
