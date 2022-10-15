@@ -4,3 +4,6 @@
 # Local batch file to set environment variables
 *config.bat
 *config.sh
+
+# CPython files that are generated when running the code
+*.pyc
