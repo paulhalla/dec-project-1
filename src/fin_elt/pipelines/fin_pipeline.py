@@ -62,6 +62,12 @@ def run_pipeline():
             models_path=path_transform_model
         )
 
+        node_staging_crypto = Transform(
+            "stg_crypto",
+            engine=target_engine,
+            models_path=path_transform_model
+        )
+
         node_serving_exchange_rates = Transform(
             "srv_fx_rate_avgs",
             engine=target_engine,
@@ -75,6 +81,7 @@ def run_pipeline():
         )
         dag.add(node_staging_treasury_yields)
         dag.add(node_staging_exchange_rates)
+        dag.add(node_staging_crypto)
         dag.add(node_serving_treasury_moving_avgs, node_staging_treasury_yields)
         dag.add(node_serving_exchange_rates, node_staging_exchange_rates)
 
