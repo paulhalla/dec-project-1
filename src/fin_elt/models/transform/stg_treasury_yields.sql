@@ -6,6 +6,8 @@
 
 {% if not table_exists %}
 CREATE TABLE {{ target_table }} AS
+{% else %}
+INSERT INTO {{ target_table }}
 {% endif %}
 WITH yields AS
 (
@@ -65,7 +67,6 @@ WITH yields AS
     WHERE date >= '2000-01-01' -- limit dataset as some fields are missing data for older dates
 )
 {% if table_exists %}
-    INSERT INTO {{ target_table }}
     SELECT *
     FROM yields
     WHERE date > '{{ max_date }}'
