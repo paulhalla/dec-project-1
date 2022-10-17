@@ -1,26 +1,22 @@
-<p align="center"> 
-  <img src="src/images/title.jpeg" alt="stock logo" width="190px" height="80px">
-</p>
-<h1 align="center"> <b> Financial Analytics ELT </b> </h1>
-<h3 align="center"> Data Engineer Camp - Group Project #1 - Oct 2022 </h3>  
-
----
-
-
+# Project plan
 ## Objective
-
-
+### What would you like people to do with the data you have produced? Are you supporting BI or ML use-cases?
 
 This is a data engineering pipeline that extracts, loads and trasform multiple sets of economic and financial data from the [Alpha Vantage API](https://www.alphavantage.co/documentation/). 
 
-
+## Consumers
+### What users would find your data useful?
 
 The output of the pipeline could be used by data/business analysts, investment managers and other finance professionals, data and finance journalists alike, depending on the specific use case.
 
+## Questions
+### What questions are you trying to solve with your data?
+What correlations are there between different economic and financial data points? This data would provide useful context for how to predict and profit from differences to inform trading related business decisions.
 
 The data allows data analysts to investigate correlations and derive hypotheses on causation between those data points. These data points would also show the financial and economic changes coinciding with [black swan events](https://www.investopedia.com/terms/b/blackswan.asp) such as the outbreak of the COVID-19 pandemic in 2019 and Russia’s invasion of Ukraine in 2022.
 
 ## Source datasets
+### What datasets are you sourcing from?
 
 The pipeline currently contains the following datasets:
 
@@ -30,28 +26,13 @@ The pipeline currently contains the following datasets:
 
 - [US treasury yield data](https://www.alphavantage.co/documentation/#treasury-yield) for various maturity timelines. The current pipeline shows the maturify timelines for 3 months, 2 years, 5 years, 7 years and 10 years respectively.
 
-## Architecture
+## Breakdown of tasks
+### How is your project broken down? Who is doing what?
+Get a project running on Github and each works on a separate branch.  
+Step 1 - Person A, B, C will write EL scripts for different datasets within Alpha Vantage (Forex daily rate, economic factors, etc).  
 
-- Object-oriented Python extraction using requests and pandas with integrated logging, testing, and yaml configuration for user input
-- Upsert load to Postgress with sqlalchemy and database transformations using modularized sql with jinja templating
-- Dockerizing and serving ELT pipeline on AWS with use of ECS, ECR, S3, RDS, and IAM
+Step 2 - We review, plan on how to merge and transform the datasets to finish the initial ELT script.  
 
-<p align="center"> 
-  <img src="src/images/arch.png" alt="arch" width="580px" height="320px">
-</p>
+Step 3 - Person A and B pair program on stitching the ELT pipeline together, adding logging and creating the Dockerfile for the docker image. Person C creates the required AWS services (e.g. RDS, ECR, S3, ECS).  
 
-## Instructions
-
-### Assumptions
-
-* The pipeline can be forked and run locally as well as run via Docker. User knows how to set up and configure RDS, S3 and access control on AWS
-### Preconditions
-* creation of a Postgres database on AWS
-* creation of an account on Alpha Vantage and obtain the API key via filling in [the form on this page](https://www.alphavantage.co/support/#api-key).
-* S3 bucket with an env file 
-  * Update the env file with details - api_key, target_db_user, target_db_password, target_db_server_name and target_db_database_name.
-* Set up schedule to run container (Steps?)
-### Steps
-1. Complete preconditions
-2. Connect reporting tools to RDS
-
+Step 4 - 2 people pair program on writing unit tests, documentation, and preparing slides for the presentation. The third person works on deploying the solution to AWS.
