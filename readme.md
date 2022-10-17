@@ -42,17 +42,10 @@ The pipeline currently contains the following datasets:
 
 ## Instructions
 
-### Assumptions
+### Environment
 
-* The pipeline can be forked and run locally as well as run via Docker. 
+The pipeline can be forked and run locally as well as run via Docker. 
 
 ### Preconditions
-* creation of a Postgres database on AWS
-* creation of an account on Alpha Vantage and obtain the API key via filling in [the form on this page](https://www.alphavantage.co/support/#api-key).
-* S3 bucket with an env file 
-  * Update the env file with details - api_key, target_db_user, target_db_password, target_db_server_name and target_db_database_name.
-* Set up schedule to run container (Steps?)
-### Steps
-1. Complete preconditions
-2. Connect reporting tools to RDS
 
+Pass in the secret variables to run the script. The script requres an Alpha Vantage API key (_api_key_, obtained via filling in [the form on this page](https://www.alphavantage.co/support/#api-key) ) and the credentials of the Postgres database to load the data into (_target_db_user_, _target_db_password_, _target_db_server_name_ and _target_db_database_name_)
