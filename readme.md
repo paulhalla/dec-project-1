@@ -11,7 +11,7 @@
 
 
 
-This is a data engineering pipeline that extracts, loads and trasform multiple sets of economic and financial data from the [Alpha Vantage API](https://www.alphavantage.co/documentation/). 
+This is a data engineering pipeline that extracts, loads and transforms multiple sets of economic and financial data from the [Alpha Vantage API](https://www.alphavantage.co/documentation/). 
 
 
 
@@ -24,16 +24,16 @@ The data allows data analysts to investigate correlations and derive hypotheses 
 
 The pipeline currently contains the following datasets:
 
-- [Foreign Exchange (FX) daily exchange rates](https://www.alphavantage.co/documentation/#currency-exchange) for different countires' currencies compared against the US Dollar. The crrent pipeline defaults to exchange rates against the AUD, EUR, JPY, RUB and GBP respectively.
+- [Foreign Exchange (FX) daily exchange rates](https://www.alphavantage.co/documentation/#currency-exchange) for different countries' currencies compared against the US Dollar. The current pipeline defaults to exchange rates against the AUD, EUR, JPY, RUB and GBP respectively.
 
-- [Digital & Crypto Currencies daily exchange rates](https://www.alphavantage.co/documentation/#digital-currency) for for different digital currencies rates compared against the US Dollar. Current pipeline defaults to exchange rates against BTC, ETH and DOGE respectively.
+- [Digital & Crypto Currencies daily exchange rates](https://www.alphavantage.co/documentation/#digital-currency) for different digital currencies rates compared against the US Dollar. The current pipeline defaults to exchange rates against BTC, ETH and DOGE respectively.
 
-- [US treasury yield data](https://www.alphavantage.co/documentation/#treasury-yield) for various maturity timelines. The current pipeline shows the maturify timelines for 3 months, 2 years, 5 years, 7 years and 10 years respectively.
+- [US treasury yield data](https://www.alphavantage.co/documentation/#treasury-yield) for various maturity timelines. The current pipeline shows the maturity timelines for 3 months, 2 years, 5 years, 7 years and 10 years respectively.
 
 ## Architecture
 
 - Object-oriented Python extraction using requests and pandas with integrated logging, testing, and yaml configuration for user input
-- Upsert load to Postgress with sqlalchemy and database transformations using modularized sql with jinja templating
+- Upsert load to Postgres with sqlalchemy and database transformations using modularized sql with jinja templating
 - Dockerizing and serving ELT pipeline on AWS with use of ECS, ECR, S3, RDS, and IAM
 
 <p align="center"> 
@@ -44,7 +44,8 @@ The pipeline currently contains the following datasets:
 
 ### Assumptions
 
-* The pipeline can be forked and run locally as well as run via Docker. User knows how to set up and configure RDS, S3 and access control on AWS
+* The pipeline can be forked and run locally as well as run via Docker. 
+
 ### Preconditions
 * creation of a Postgres database on AWS
 * creation of an account on Alpha Vantage and obtain the API key via filling in [the form on this page](https://www.alphavantage.co/support/#api-key).
