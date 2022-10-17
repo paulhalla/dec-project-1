@@ -36,57 +36,54 @@ def run_pipeline():
         # configure pipeline
         logging.info("Getting config variables")
         path_transform_model = config["transform"]["model_path"]
-        chunksize = config["load"]["chunksize"]
+
         # set up database
         target_engine = PostgresDB.create_pg_engine(db_target="target")
 
         # build dag
         dag = TopologicalSorter()
-        nodes_extract_load = []
 
-        logging.info("Run extract and load pipeline")
         # Extract and Load data to staging tables
+        logging.info("Run extract and load pipeline")
         extract_load.pipeline()
 
-        logging.info("Creating transform nodes")
         # transform nodes
+        logging.info("Creating transform nodes")
         node_staging_treasury_yields = Transform(
             "stg_treasury_yields",
             engine=target_engine,
             models_path=path_transform_model
         )
-
         node_staging_exchange_rates = Transform(
             "stg_exchange_rates",
             engine=target_engine,
             models_path=path_transform_model
         )
-
         node_staging_crypto = Transform(
             "stg_crypto",
             engine=target_engine,
             models_path=path_transform_model
         )
-
         node_serving_exchange_rates = Transform(
             "srv_fx_rate_avgs",
             engine=target_engine,
             models_path=path_transform_model
         )
-
         node_serving_treasury_moving_avgs = Transform(
             "srv_try_moving_avgs",
             engine=target_engine,
             models_path=path_transform_model
         )
+
+        # Build DAG
         dag.add(node_staging_treasury_yields)
         dag.add(node_staging_exchange_rates)
         dag.add(node_staging_crypto)
         dag.add(node_serving_treasury_moving_avgs, node_staging_treasury_yields)
         dag.add(node_serving_exchange_rates, node_staging_exchange_rates)
 
-        logging.info("Executing DAG")
         # run dag
+        logging.info("Executing DAG")
         dag_rendered = tuple(dag.static_order())
         for node in dag_rendered:
             node.run()
