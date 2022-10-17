@@ -6,6 +6,8 @@
 
 {% if not table_exists %}
 CREATE TABLE {{ target_table }} AS
+{% else %}
+INSERT INTO {{ target_table }}
 {% endif %}
 WITH exchange_rates AS (
 select coalesce(a.date, b.date, c.date, d.date, e.date) as date,
@@ -38,7 +40,6 @@ WHERE a.date >= '2014-11-07' -- limit date range as data for earliern is missing
 )
 
 {% if table_exists %}
-    INSERT INTO {{ target_table }}
     SELECT *
     FROM exchange_rates
     WHERE date > '{{ max_date }}'

@@ -6,34 +6,35 @@
 
 {% if not table_exists %}
 CREATE TABLE {{ target_table }} AS
+{% else %}
+INSERT INTO {{ target_table }}
 {% endif %}
 WITH crypto AS
 (
     -- Join all symbols
     -- Add 30 day average
     select
-        b.date,
-        b.symbol as "Symbol 1",
-        b.mkt_cap as "Mkt Cap 1",
-        ROUND(AVG(b.mkt_cap) OVER (ORDER BY b.date::date ASC ROWS BETWEEN 29 PRECEDING AND CURRENT ROW)::NUMERIC,0) as "Prior 30 Day Avg 1",
-        e.symbol as "Symbol 2",
-        e.mkt_cap as "Mkt Cap 2",
-        ROUND(AVG(e.mkt_cap) OVER (ORDER BY e.date::date ASC ROWS BETWEEN 29 PRECEDING AND CURRENT ROW)::NUMERIC,0) as "Prior 30 Day Avg 2",
-        d.symbol as "Symbol 3",
-        d.mkt_cap as "Mkt Cap 3",
-        ROUND(AVG(d.mkt_cap) OVER (ORDER BY d.date::date ASC ROWS BETWEEN 29 PRECEDING AND CURRENT ROW)::NUMERIC,0) as "Prior 30 Day Avg 3"
+        coalesce(b."Date", d."Date", e."Date") as Date,
+        b."Symbol" as "Symbol 1",
+        b."Mkt Cap" as "Mkt Cap 1",
+        ROUND(AVG(b."Mkt Cap") OVER (ORDER BY b."Date"::date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW)::NUMERIC,0) as "Prior 30 Day Avg 1",
+        e."Symbol" as "Symbol 2",
+        e."Mkt Cap" as "Mkt Cap 2",
+        ROUND(AVG(e."Mkt Cap") OVER (ORDER BY e."Date"::date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW)::NUMERIC,0) as "Prior 30 Day Avg 2",
+        d."Symbol" as "Symbol 3",
+        d."Mkt Cap" as "Mkt Cap 3",
+        ROUND(AVG(d."Mkt Cap") OVER (ORDER BY d."Date"::date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW)::NUMERIC,0) as "Prior 30 Day Avg 3"
     from raw_crypto_price_btc b
     full outer join raw_crypto_price_eth e
-        ON b.date = e.date
+        ON b."Date" = e."Date"
     full outer join raw_crypto_price_doge d
-        ON b.date = d.date
-    order by b.date DESC
+        ON b."Date" = d."Date"
+    order by b."Date" DESC
 )
 {% if table_exists %}
-    INSERT INTO {{ target_table }}
     SELECT *
     FROM crypto
-    WHERE date > '{{ max_date }}'
+    WHERE "Date" > '{{ max_date }}'
 {% else %}
     SELECT *
     FROM crypto
