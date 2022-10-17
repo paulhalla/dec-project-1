@@ -34,7 +34,7 @@ WITH crypto AS
 {% if table_exists %}
     SELECT *
     FROM crypto
-    WHERE "Date" > '{{ max_date }}'
+    WHERE Date > '{{ max_date }}'
 {% else %}
     SELECT *
     FROM crypto
