@@ -24,14 +24,15 @@ class Extract:
         """
         logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
 
-        url = f'https://www.alphavantage.co/query?' \
-              f'function=TREASURY_YIELD&' \
-              f'interval={interval}&' \
-              f'maturity={maturity}&' \
-              f'apikey={api_key}'
-
+        url = 'https://www.alphavantage.co/query'
+        params = {
+              'function': "TREASURY_YIELD",
+              'interval': interval,
+              'maturity': maturity,
+              'apikey': api_key
+        }
         if api_key:
-            r = requests.get(url)
+            r = requests.get(url=url, params=params)
             if r.status_code == 200:
                 try:
                     data = r.json()
@@ -56,15 +57,18 @@ class Extract:
         """
         logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
         
-        url = f'https://www.alphavantage.co/query?' \
-              f'function=FX_DAILY&' \
-              f'from_symbol=USD&' \
-              f'to_symbol={to_symbol}&' \
-              f'outputsize=full&' \
-              f'apikey={api_key}'
+
+        url = 'https://www.alphavantage.co/query'
+        params = {
+              'function': 'FX_DAILY',
+              'from_symbol': 'USD',
+              'to_symbol': to_symbol,
+              'outputsize': 'full',
+              'apikey': api_key
+        }
             
         if api_key:
-            r = requests.get(url)
+            r = requests.get(url=url, params=params)
             if r.status_code == 200:
                 try:
                     response_data = r.json()
@@ -106,16 +110,18 @@ class Extract:
 
         logging.basicConfig(level=logging.INFO, format="[%(levelname)s][%(asctime)s]: %(message)s")
 
-        url = f'https://www.alphavantage.co/query?' \
-              f'function=DIGITAL_CURRENCY_DAILY&' \
-              f'symbol={symbol}&' \
-              f'market={market}&' \
-              f'apikey={api_key}'
-
+        url = 'https://www.alphavantage.co/query'
+        params = {
+              'function': 'DIGITAL_CURRENCY_DAILY',
+              'symbol': symbol,
+              'market': market,
+              'apikey': api_key
+        }
+            
         #base_url = f'https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol={symbol}&market={market}&apikey={api_key}'
 
         if api_key:
-            r = requests.get(url)
+            r = requests.get(url=url, params=params)
             if r.status_code == 200:
                 try:
                     data = r.json()
