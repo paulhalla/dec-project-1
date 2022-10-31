@@ -7,3 +7,6 @@
 
 # CPython files that are generated when running the code
 *.pyc
+
+# MacOS related metadata
+.DS_Store
